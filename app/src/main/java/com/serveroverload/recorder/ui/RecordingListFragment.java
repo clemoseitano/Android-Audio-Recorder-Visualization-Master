@@ -1,9 +1,7 @@
 /**
- * 
+ *
  */
 package com.serveroverload.recorder.ui;
-
-import java.io.IOException;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
@@ -26,324 +24,323 @@ import com.serveroverload.recorder.customview.PlayerVisualizerView;
 import com.serveroverload.recorder.util.Helper;
 import com.serveroverload.recorder.util.RecordingsLoaderTask;
 
+import java.io.IOException;
+
 /**
  * @author Hitesh
- *
  */
 public class RecordingListFragment extends Fragment implements
-		OnRefreshListener {
-
-	private static final float VISUALIZER_HEIGHT_DIP = 100f;
-	private SwipeRefreshLayout swipeLayout;
-	private ListView recordingsListView;
-	private LinearLayout mLinearLayout;
-	private com.serveroverload.recorder.customview.PlayerVisualizerView mVisualizerView;
-	private Visualizer mVisualizer;
-	private View rootView;
-	private boolean SONGPAUSED;
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.recording_list_fragment,
-				container, false);
-
-		((HomeActivity) getActivity()).RecordingNumber = 0;
-		//
-		// ((HomeActivity) getActivity()).getmActionBarTitle().setText(
-		// getResources().getString(R.string.title_album));
-
-		recordingsListView = (ListView) rootView
-				.findViewById(R.id.listView_Recording);
-
-		new RecordingsLoaderTask(swipeLayout, recordingsListView, getActivity())
-				.execute(Helper.LOAD_RECORDINGS);
-
-		recordingsListView.setFastScrollEnabled(true);
-
-		// }
+        OnRefreshListener {
+
+    private static final float VISUALIZER_HEIGHT_DIP = 100f;
+    private SwipeRefreshLayout swipeLayout;
+    private ListView recordingsListView;
+    private LinearLayout mLinearLayout;
+    private com.serveroverload.recorder.customview.PlayerVisualizerView mVisualizerView;
+    private Visualizer mVisualizer;
+    private View rootView;
+    private boolean SONGPAUSED;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.recording_list_fragment,
+                container, false);
+
+        ((HomeActivity) getActivity()).RecordingNumber = 0;
+        //
+        // ((HomeActivity) getActivity()).getmActionBarTitle().setText(
+        // getResources().getString(R.string.title_album));
+
+        recordingsListView = (ListView) rootView
+                .findViewById(R.id.listView_Recording);
 
-		swipeLayout = (SwipeRefreshLayout) rootView
-				.findViewById(R.id.swipe_container);
-		swipeLayout.setOnRefreshListener(RecordingListFragment.this);
-		swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
-				android.R.color.holo_green_light,
-				android.R.color.holo_orange_light,
-				android.R.color.holo_red_light);
+        new RecordingsLoaderTask(swipeLayout, recordingsListView, getActivity())
+                .execute(Helper.LOAD_RECORDINGS);
 
-		// listen for when the music stream ends playing
-		((HomeActivity) getActivity()).getmMediaPlayer()
-				.setOnCompletionListener(
-						new MediaPlayer.OnCompletionListener() {
-							public void onCompletion(MediaPlayer mediaPlayer) {
-								// disable the visualizer as it's no longer
-								// needed
+        recordingsListView.setFastScrollEnabled(true);
 
-								if (null != mVisualizer)
-									mVisualizer.setEnabled(false);
+        // }
 
-								rootView.findViewById(R.id.btnPauseSlider)
-										.setVisibility(View.GONE);
+        swipeLayout = (SwipeRefreshLayout) rootView
+                .findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(RecordingListFragment.this);
+        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
-								rootView.findViewById(R.id.btnPlaySlider)
-										.setVisibility(View.VISIBLE);
+        // listen for when the music stream ends playing
+        ((HomeActivity) getActivity()).getmMediaPlayer()
+                .setOnCompletionListener(
+                        new MediaPlayer.OnCompletionListener() {
+                            public void onCompletion(MediaPlayer mediaPlayer) {
+                                // disable the visualizer as it's no longer
+                                // needed
 
-							}
-						});
+                                if (null != mVisualizer)
+                                    mVisualizer.setEnabled(false);
 
-		mLinearLayout = (LinearLayout) rootView
-				.findViewById(R.id.linearLayoutVisual);
-		// Create a VisualizerView to display the audio waveform for the current
-		// settings
-		mVisualizerView = new PlayerVisualizerView(getActivity());
-		mVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				(int) (VISUALIZER_HEIGHT_DIP * getResources()
-						.getDisplayMetrics().density)));
-		mLinearLayout.addView(mVisualizerView);
+                                rootView.findViewById(R.id.btnPauseSlider)
+                                        .setVisibility(View.GONE);
 
-		// Create the Visualizer object and attach it to our media player.
-		mVisualizer = new Visualizer(((HomeActivity) getActivity())
-				.getmMediaPlayer().getAudioSessionId());
+                                rootView.findViewById(R.id.btnPlaySlider)
+                                        .setVisibility(View.VISIBLE);
 
-		mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+                            }
+                        });
 
-		mVisualizer.setDataCaptureListener(
-				new Visualizer.OnDataCaptureListener() {
-					public void onWaveFormDataCapture(Visualizer visualizer,
-							byte[] bytes, int samplingRate) {
-						mVisualizerView.updateVisualizer(bytes);
-					}
+        mLinearLayout = (LinearLayout) rootView
+                .findViewById(R.id.linearLayoutVisual);
+        // Create a VisualizerView to display the audio waveform for the current
+        // settings
+        mVisualizerView = new PlayerVisualizerView(getActivity());
+        mVisualizerView.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                (int) (VISUALIZER_HEIGHT_DIP * getResources()
+                        .getDisplayMetrics().density)));
+        mLinearLayout.addView(mVisualizerView);
 
-					public void onFftDataCapture(Visualizer visualizer,
-							byte[] bytes, int samplingRate) {
-					}
-				}, Visualizer.getMaxCaptureRate() / 2, true, false);
+        // Create the Visualizer object and attach it to our media player.
+        mVisualizer = new Visualizer(((HomeActivity) getActivity())
+                .getmMediaPlayer().getAudioSessionId());
 
-		mVisualizer.setEnabled(true);
+        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
 
-		rootView.findViewById(R.id.btnPauseSlider).setOnClickListener(
-				new OnClickListener() {
+        mVisualizer.setDataCaptureListener(
+                new Visualizer.OnDataCaptureListener() {
+                    public void onWaveFormDataCapture(Visualizer visualizer,
+                                                      byte[] bytes, int samplingRate) {
+                        mVisualizerView.updateVisualizer(bytes);
+                    }
 
-					@Override
-					public void onClick(View v) {
+                    public void onFftDataCapture(Visualizer visualizer,
+                                                 byte[] bytes, int samplingRate) {
+                    }
+                }, Visualizer.getMaxCaptureRate() / 2, true, false);
 
-						Helper.getHelperInstance().makeHepticFeedback(
-								getActivity());
-						
-						if (null != mVisualizer)
-							mVisualizer.setEnabled(false);
+        mVisualizer.setEnabled(true);
 
-						((HomeActivity) getActivity()).getmMediaPlayer()
-								.pause();
+        rootView.findViewById(R.id.btnPauseSlider).setOnClickListener(
+                new OnClickListener() {
 
-						SONGPAUSED = true;
+                    @Override
+                    public void onClick(View v) {
 
-						rootView.findViewById(R.id.btnPauseSlider)
-								.setVisibility(View.GONE);
+                        Helper.getHelperInstance().makeHepticFeedback(
+                                getActivity());
 
-						rootView.findViewById(R.id.btnPlaySlider)
-								.setVisibility(View.VISIBLE);
+                        if (null != mVisualizer)
+                            mVisualizer.setEnabled(false);
 
-					}
-				});
+                        ((HomeActivity) getActivity()).getmMediaPlayer()
+                                .pause();
 
-		rootView.findViewById(R.id.btnPlaySlider).setOnClickListener(
-				new OnClickListener() {
+                        SONGPAUSED = true;
 
-					@Override
-					public void onClick(View v) {
+                        rootView.findViewById(R.id.btnPauseSlider)
+                                .setVisibility(View.GONE);
 
-						Helper.getHelperInstance().makeHepticFeedback(
-								getActivity());
+                        rootView.findViewById(R.id.btnPlaySlider)
+                                .setVisibility(View.VISIBLE);
 
-						if (SONGPAUSED) {
+                    }
+                });
 
-							resumeSong();
+        rootView.findViewById(R.id.btnPlaySlider).setOnClickListener(
+                new OnClickListener() {
 
-						} else {
+                    @Override
+                    public void onClick(View v) {
 
-							playSong(((HomeActivity) getActivity()).RecordingNumber);
+                        Helper.getHelperInstance().makeHepticFeedback(
+                                getActivity());
 
-						}
-					}
-				});
+                        if (SONGPAUSED) {
 
-		rootView.findViewById(R.id.btnNextSlider).setOnClickListener(
-				new OnClickListener() {
+                            resumeSong();
 
-					@Override
-					public void onClick(View v) {
+                        } else {
 
-						Helper.getHelperInstance().makeHepticFeedback(
-								getActivity());
+                            playSong(((HomeActivity) getActivity()).RecordingNumber);
 
-						if (((HomeActivity) getActivity()).getRecordings()
-								.size() > 0) {
-							if (((HomeActivity) getActivity()).RecordingNumber < (((HomeActivity) getActivity())
-									.getRecordings().size() - 1)) {
-								((HomeActivity) getActivity()).RecordingNumber++;
-							} else {
-								((HomeActivity) getActivity()).RecordingNumber = 0;
-							}
+                        }
+                    }
+                });
 
-							playSong(((HomeActivity) getActivity()).RecordingNumber);
-						}
+        rootView.findViewById(R.id.btnNextSlider).setOnClickListener(
+                new OnClickListener() {
 
-					}
-				});
+                    @Override
+                    public void onClick(View v) {
 
-		rootView.findViewById(R.id.btnBackSlider).setOnClickListener(
-				new OnClickListener() {
+                        Helper.getHelperInstance().makeHepticFeedback(
+                                getActivity());
 
-					@Override
-					public void onClick(View v) {
+                        if (((HomeActivity) getActivity()).getRecordings()
+                                .size() > 0) {
+                            if (((HomeActivity) getActivity()).RecordingNumber < (((HomeActivity) getActivity())
+                                    .getRecordings().size() - 1)) {
+                                ((HomeActivity) getActivity()).RecordingNumber++;
+                            } else {
+                                ((HomeActivity) getActivity()).RecordingNumber = 0;
+                            }
 
-						Helper.getHelperInstance().makeHepticFeedback(
-								getActivity());
+                            playSong(((HomeActivity) getActivity()).RecordingNumber);
+                        }
 
-						if (((HomeActivity) getActivity()).getRecordings()
-								.size() > 0) {
-							if (((HomeActivity) getActivity()).RecordingNumber > 0) {
-								((HomeActivity) getActivity()).RecordingNumber--;
-							} else {
-								((HomeActivity) getActivity()).RecordingNumber = ((HomeActivity) getActivity())
-										.getRecordings().size() - 1;
-							}
+                    }
+                });
 
-							playSong(((HomeActivity) getActivity()).RecordingNumber);
-						}
+        rootView.findViewById(R.id.btnBackSlider).setOnClickListener(
+                new OnClickListener() {
 
-					}
-				});
+                    @Override
+                    public void onClick(View v) {
 
-		rootView.findViewById(R.id.btnNextSlider).setOnClickListener(
-				new OnClickListener() {
+                        Helper.getHelperInstance().makeHepticFeedback(
+                                getActivity());
 
-					@Override
-					public void onClick(View v) {
+                        if (((HomeActivity) getActivity()).getRecordings()
+                                .size() > 0) {
+                            if (((HomeActivity) getActivity()).RecordingNumber > 0) {
+                                ((HomeActivity) getActivity()).RecordingNumber--;
+                            } else {
+                                ((HomeActivity) getActivity()).RecordingNumber = ((HomeActivity) getActivity())
+                                        .getRecordings().size() - 1;
+                            }
 
-						if (((HomeActivity) getActivity()).getRecordings()
-								.size() > 0) {
-							if (((HomeActivity) getActivity()).RecordingNumber < (((HomeActivity) getActivity())
-									.getRecordings().size() - 1)) {
-								((HomeActivity) getActivity()).RecordingNumber++;
-							} else {
-								((HomeActivity) getActivity()).RecordingNumber = 0;
-							}
-						}
-						playSong(((HomeActivity) getActivity()).RecordingNumber);
+                            playSong(((HomeActivity) getActivity()).RecordingNumber);
+                        }
 
-					}
-				});
+                    }
+                });
 
-		recordingsListView.setOnItemClickListener(new OnItemClickListener() {
+        rootView.findViewById(R.id.btnNextSlider).setOnClickListener(
+                new OnClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+                    @Override
+                    public void onClick(View v) {
 
-				((HomeActivity) getActivity()).RecordingNumber = position;
+                        if (((HomeActivity) getActivity()).getRecordings()
+                                .size() > 0) {
+                            if (((HomeActivity) getActivity()).RecordingNumber < (((HomeActivity) getActivity())
+                                    .getRecordings().size() - 1)) {
+                                ((HomeActivity) getActivity()).RecordingNumber++;
+                            } else {
+                                ((HomeActivity) getActivity()).RecordingNumber = 0;
+                            }
+                        }
+                        playSong(((HomeActivity) getActivity()).RecordingNumber);
 
-				playSong(position);
+                    }
+                });
 
-			}
-		});
+        recordingsListView.setOnItemClickListener(new OnItemClickListener() {
 
-		return rootView;
-	}
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
 
-	@Override
-	public void onRefresh() {
+                ((HomeActivity) getActivity()).RecordingNumber = position;
 
-		new RecordingsLoaderTask(swipeLayout, recordingsListView, getActivity())
-				.execute(Helper.LOAD_RECORDINGS);
+                playSong(position);
 
-	}
+            }
+        });
 
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
+        return rootView;
+    }
 
-		if (null != mVisualizer)
-			mVisualizer.release();
-		mVisualizer = null;
-	}
+    @Override
+    public void onRefresh() {
 
-	@Override
-	public void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
+        new RecordingsLoaderTask(swipeLayout, recordingsListView, getActivity())
+                .execute(Helper.LOAD_RECORDINGS);
 
-		if (null != mVisualizer)
-			mVisualizer.release();
-		mVisualizer = null;
+    }
 
-		((HomeActivity) getActivity()).getmMediaPlayer().reset();
-	}
+    @Override
+    public void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
 
-	@Override
-	public void onAttach(Activity activity) {
-		// TODO Auto-generated method stub
-		super.onAttach(activity);
+        if (null != mVisualizer)
+            mVisualizer.release();
+        mVisualizer = null;
+    }
 
-		// activityReference = activity;
-	}
+    @Override
+    public void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
 
-	private void playSong(int RecordingNumber) {
-		MediaPlayer mMediaPlayer = ((HomeActivity) getActivity())
-				.getmMediaPlayer();
-		
-		if (null != mVisualizer)
-			mVisualizer.setEnabled(true);
+        if (null != mVisualizer)
+            mVisualizer.release();
+        mVisualizer = null;
 
-		if (null != mMediaPlayer
-				&& !((HomeActivity) getActivity()).getRecordings().isEmpty()) {
-			mMediaPlayer.reset();
-			try {
-				mMediaPlayer.setDataSource(((HomeActivity) getActivity())
-						.getRecordings().get(RecordingNumber).toString());
+        ((HomeActivity) getActivity()).getmMediaPlayer().reset();
+    }
 
-				mMediaPlayer.prepare();
-				mMediaPlayer.start();
+    @Override
+    public void onAttach(Activity activity) {
+        // TODO Auto-generated method stub
+        super.onAttach(activity);
 
-				rootView.findViewById(R.id.btnPauseSlider).setVisibility(
-						View.VISIBLE);
+        // activityReference = activity;
+    }
 
-				rootView.findViewById(R.id.btnPlaySlider).setVisibility(
-						View.GONE);
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    private void playSong(int RecordingNumber) {
+        MediaPlayer mMediaPlayer = ((HomeActivity) getActivity())
+                .getmMediaPlayer();
 
-		}
-	}
+        if (null != mVisualizer)
+            mVisualizer.setEnabled(true);
 
-	private void resumeSong() {
-		
-		if (null != mVisualizer)
-			mVisualizer.setEnabled(true);
-		
-		((HomeActivity) getActivity()).getmMediaPlayer().start();
+        if (null != mMediaPlayer
+                && !((HomeActivity) getActivity()).getRecordings().isEmpty()) {
+            mMediaPlayer.reset();
+            try {
+                mMediaPlayer.setDataSource(((HomeActivity) getActivity())
+                        .getRecordings().get(RecordingNumber).toString());
 
-		rootView.findViewById(R.id.btnPauseSlider).setVisibility(View.VISIBLE);
+                mMediaPlayer.prepare();
+                mMediaPlayer.start();
 
-		rootView.findViewById(R.id.btnPlaySlider).setVisibility(View.GONE);
+                rootView.findViewById(R.id.btnPauseSlider).setVisibility(
+                        View.VISIBLE);
 
-		SONGPAUSED = false;
-	}
+                rootView.findViewById(R.id.btnPlaySlider).setVisibility(
+                        View.GONE);
+            } catch (IllegalArgumentException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (SecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
-	// private Activity activityReference;
+        }
+    }
+
+    private void resumeSong() {
+
+        if (null != mVisualizer)
+            mVisualizer.setEnabled(true);
+
+        ((HomeActivity) getActivity()).getmMediaPlayer().start();
+
+        rootView.findViewById(R.id.btnPauseSlider).setVisibility(View.VISIBLE);
+
+        rootView.findViewById(R.id.btnPlaySlider).setVisibility(View.GONE);
+
+        SONGPAUSED = false;
+    }
 
 }

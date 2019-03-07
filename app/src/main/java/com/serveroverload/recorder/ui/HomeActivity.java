@@ -1,7 +1,5 @@
 package com.serveroverload.recorder.ui;
 
-import java.util.ArrayList;
-
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,60 +8,60 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.serveroverload.recorder.R;
 
+import java.util.ArrayList;
+
 public class HomeActivity extends FragmentActivity {
 
-	MediaPlayer mMediaPlayer;
+    public int RecordingNumber;
+    MediaPlayer mMediaPlayer;
+    private ArrayList<String> recordings = new ArrayList<String>();
 
-	private ArrayList<String> recordings = new ArrayList<String>();
+    /**
+     * @return the mMediaPlayer
+     */
+    public MediaPlayer getmMediaPlayer() {
+        return mMediaPlayer;
+    }
 
-	public int RecordingNumber;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-	/**
-	 * @return the mMediaPlayer
-	 */
-	public MediaPlayer getmMediaPlayer() {
-		return mMediaPlayer;
-	}
+        setContentView(R.layout.activity_main);
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+        mMediaPlayer = new MediaPlayer();
 
-		setContentView(R.layout.activity_main);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager
+                .beginTransaction();
+        fragmentTransaction.replace(R.id.container, new RecordAudioFragment());
+        fragmentTransaction.addToBackStack("RecordAudioFragment");
+        fragmentTransaction.commit();
 
-		mMediaPlayer = new MediaPlayer();
-
-		FragmentManager fragmentManager = getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager
-				.beginTransaction();
-		fragmentTransaction.replace(R.id.container, new RecordAudioFragment());
-		fragmentTransaction.addToBackStack("RecordAudioFragment");
-		fragmentTransaction.commit();
-		
-		//AdView mAdView = (AdView) findViewById(R.id.adView);
+        //AdView mAdView = (AdView) findViewById(R.id.adView);
         //AdRequest adRequest = new AdRequest.Builder().build();
         //mAdView.loadAd(adRequest);
 
-	}
+    }
 
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
 
-		if (mMediaPlayer != null) {
-			mMediaPlayer.stop();
-			mMediaPlayer = null;
-		}
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer = null;
+        }
 
-	}
+    }
 
-	public ArrayList<String> getRecordings() {
-		return recordings;
-	}
+    public ArrayList<String> getRecordings() {
+        return recordings;
+    }
 
-	public void setRecordings(ArrayList<String> recordings) {
-		this.recordings = recordings;
-	}
+    public void setRecordings(ArrayList<String> recordings) {
+        this.recordings = recordings;
+    }
 
 }

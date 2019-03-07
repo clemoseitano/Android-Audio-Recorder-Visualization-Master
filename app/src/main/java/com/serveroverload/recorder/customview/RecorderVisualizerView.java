@@ -1,14 +1,14 @@
 package com.serveroverload.recorder.customview;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecorderVisualizerView extends View {
     private static final int LINE_WIDTH = 2; // width of visualizer lines
@@ -24,20 +24,20 @@ public class RecorderVisualizerView extends View {
         linePaint = new Paint(); // create Paint for lines
         linePaint.setColor(Color.GREEN); // set color to green
         linePaint.setStrokeWidth(LINE_WIDTH); // set stroke width
-    } 
+    }
 
     // called when the dimensions of the View change
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         width = w; // new width of this View
         height = h; // new height of this View
-        amplitudes = new ArrayList<Float>(width / LINE_WIDTH);
-    } 
+        amplitudes = new ArrayList<>(width / LINE_WIDTH);
+    }
 
     // clear all amplitudes to prepare for a new visualization
     public void clear() {
         amplitudes.clear();
-    } 
+    }
 
     // add the given amplitude to the amplitudes ArrayList
     public void addAmplitude(float amplitude) {
@@ -46,8 +46,8 @@ public class RecorderVisualizerView extends View {
         // if the power lines completely fill the VisualizerView
         if (amplitudes.size() * LINE_WIDTH >= width) {
             amplitudes.remove(0); // remove oldest power value
-        } 
-    } 
+        }
+    }
 
     // draw the visualizer with scaled lines representing the amplitudes
     @Override
@@ -63,7 +63,7 @@ public class RecorderVisualizerView extends View {
             // draw a line representing this item in the amplitudes ArrayList
             canvas.drawLine(curX, middle + scaledHeight / 2, curX, middle
                     - scaledHeight / 2, linePaint);
-        } 
-    } 
+        }
+    }
 
 }

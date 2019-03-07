@@ -15,7 +15,5 @@
     <string name="rec_saved">Recording Saved at </string>
     <string name="rec_deleted">Deleted recording</string>
     <string name="rec_delete_fail">Failed to delete recording </string>
-    <string name="banner_ad_unit_id">ca-app-pub-9404626930613325/4259844699</string>
-    <string name="banner_ad_unit_id_pop">ca-app-pub-9404626930613325/5736577892</string>
 
 </resources>

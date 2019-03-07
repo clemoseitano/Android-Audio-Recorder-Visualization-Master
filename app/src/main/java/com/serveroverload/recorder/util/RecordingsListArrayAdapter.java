@@ -1,18 +1,7 @@
 package com.serveroverload.recorder.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import com.serveroverload.recorder.R;
-import com.serveroverload.recorder.R.id;
-import com.serveroverload.recorder.R.layout;
-import com.serveroverload.recorder.customview.SwipeLayout;
-import com.serveroverload.recorder.ui.HomeActivity;
-
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,97 +11,97 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RecordingsListArrayAdapter extends ArrayAdapter<String>
+import com.serveroverload.recorder.R;
+import com.serveroverload.recorder.customview.SwipeLayout;
+import com.serveroverload.recorder.ui.HomeActivity;
 
-{
-	public RecordingsListArrayAdapter(Context context, int resource,
-			List<String> listOfRecordings) {
-		super(context, resource, listOfRecordings);
+import java.io.File;
+import java.util.List;
 
-		this.context = context;
-		this.listOfRecordings = listOfRecordings;
-	}
+public class RecordingsListArrayAdapter extends ArrayAdapter<String> {
+    private final Context context;
+    private final List<String> listOfRecordings;
+    private ViewHolder holder;
 
-	private final Context context;
-	private final List<String> listOfRecordings;
-	private ViewHolder holder;
+    public RecordingsListArrayAdapter(Context context, int resource,
+                                      List<String> listOfRecordings) {
+        super(context, resource, listOfRecordings);
 
-	private class ViewHolder {
-		TextView recordingName;
-		SwipeLayout currentSwipeLayout;
-	}
+        this.context = context;
+        this.listOfRecordings = listOfRecordings;
+    }
 
-	@Override
-	public View getView(final int position, View convertView, ViewGroup parent) {
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
-		if (convertView == null) {
+        if (convertView == null) {
 
-			LayoutInflater inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-			convertView = inflater.inflate(
-					R.layout.swipe_layout_recording_list_item, parent, false);
+            convertView = inflater.inflate(
+                    R.layout.swipe_layout_recording_list_item, parent, false);
 
-			holder = new ViewHolder();
+            holder = new ViewHolder();
 
-			holder.recordingName = (TextView) convertView
-					.findViewById(R.id.textViewRecordingName);
+            holder.recordingName = (TextView) convertView
+                    .findViewById(R.id.textViewRecordingName);
 
-			holder.recordingName.setSelected(true);
+            holder.recordingName.setSelected(true);
 
-			holder.currentSwipeLayout = (SwipeLayout) convertView
-					.findViewById(R.id.swipe_layout_1);
+            holder.currentSwipeLayout = (SwipeLayout) convertView
+                    .findViewById(R.id.swipe_layout_1);
 
-			holder.currentSwipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+            holder.currentSwipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
-			holder.currentSwipeLayout.setDragEdge(SwipeLayout.DragEdge.Left);
+            holder.currentSwipeLayout.setDragEdge(SwipeLayout.DragEdge.Left);
 
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-		holder.recordingName.setText(((HomeActivity) context).getRecordings().get(position));
+        holder.recordingName.setText(((HomeActivity) context).getRecordings().get(position));
 
-		// Tapped in hidden menu
-		holder.currentSwipeLayout.findViewById(R.id.share).setOnClickListener(
-				new OnClickListener() {
+        // Tapped in hidden menu
+        holder.currentSwipeLayout.findViewById(R.id.share).setOnClickListener(
+                new OnClickListener() {
 
-					@Override
-					public void onClick(View arg0) {
-						Intent sharingIntent = new Intent(
-								android.content.Intent.ACTION_SEND);
-						sharingIntent.setType("text/plain");
-						File archivo = new File(((HomeActivity) context).getRecordings().get(position));
-						sharingIntent.putExtra(Intent.EXTRA_STREAM,
-								Uri.fromFile(archivo));
-						context.startActivity(Intent.createChooser(
-								sharingIntent, "Share via"));
+                    @Override
+                    public void onClick(View arg0) {
+                        Intent sharingIntent = new Intent(
+                                android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        File archivo = new File(((HomeActivity) context).getRecordings().get(position));
+                        sharingIntent.putExtra(Intent.EXTRA_STREAM,
+                                Uri.fromFile(archivo));
+                        context.startActivity(Intent.createChooser(
+                                sharingIntent, "Share via"));
 
-					}
-				});
+                    }
+                });
 
-		holder.currentSwipeLayout.findViewById(R.id.delete_song)
-				.setOnClickListener(new OnClickListener() {
+        holder.currentSwipeLayout.findViewById(R.id.delete_song)
+                .setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
+                    @Override
+                    public void onClick(View v) {
 
-						Helper.getHelperInstance().makeHepticFeedback(context);
+                        Helper.getHelperInstance().makeHepticFeedback(context);
 
-						if (new File(((HomeActivity) context).getRecordings().get(position)).delete()) {
-							Toast.makeText(getContext(), "Deleted", 500).show();
+                        if (new File(((HomeActivity) context).getRecordings().get(position)).delete()) {
+                            Toast.makeText(getContext(), "Deleted", 500).show();
 
-							((HomeActivity) context).getRecordings().remove(position);
+                            ((HomeActivity) context).getRecordings().remove(position);
 
-							notifyDataSetChanged();
+                            notifyDataSetChanged();
 
-							((HomeActivity) context).getmMediaPlayer().reset();
-						}
+                            ((HomeActivity) context).getmMediaPlayer().reset();
+                        }
 
-					}
+                    }
 
-				});
+                });
 
 //		convertView.setOnClickListener(new OnClickListener() {
 //
@@ -137,6 +126,11 @@ public class RecordingsListArrayAdapter extends ArrayAdapter<String>
 //			}
 //		});
 
-		return convertView;
-	}
+        return convertView;
+    }
+
+    private class ViewHolder {
+        TextView recordingName;
+        SwipeLayout currentSwipeLayout;
+    }
 }
