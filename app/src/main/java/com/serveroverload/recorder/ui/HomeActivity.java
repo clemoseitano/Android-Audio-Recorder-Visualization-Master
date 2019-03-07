@@ -8,8 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.serveroverload.recorder.R;
 
 public class HomeActivity extends FragmentActivity {
@@ -42,9 +40,9 @@ public class HomeActivity extends FragmentActivity {
 		fragmentTransaction.addToBackStack("RecordAudioFragment");
 		fragmentTransaction.commit();
 		
-		AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+		//AdView mAdView = (AdView) findViewById(R.id.adView);
+        //AdRequest adRequest = new AdRequest.Builder().build();
+        //mAdView.loadAd(adRequest);
 
 	}
 

@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.serveroverload.recorder.R;
-import com.serveroverload.recorder.R.styleable;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
@@ -25,6 +22,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
+
+import com.serveroverload.recorder.R;
 
 /**
  * The Class SwipeLayout.

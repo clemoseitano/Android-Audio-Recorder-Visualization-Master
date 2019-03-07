@@ -3,7 +3,6 @@ package com.serveroverload.recorder.util;
 import java.util.ArrayList;
 
 import com.serveroverload.recorder.R;
-import com.serveroverload.recorder.R.layout;
 import com.serveroverload.recorder.ui.HomeActivity;
 
 import android.content.Context;
