@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -49,6 +50,7 @@ public class RecordAudioFragment extends Fragment {
             {
                 // get the current amplitude
                 int x = myAudioRecorder.getMaxAmplitude();
+                Log.e("DEBUG", "AMP: "+x);
                 visualizerView.addAmplitude(x); // update the VisualizeView
                 visualizerView.invalidate(); // refresh the VisualizerView
 

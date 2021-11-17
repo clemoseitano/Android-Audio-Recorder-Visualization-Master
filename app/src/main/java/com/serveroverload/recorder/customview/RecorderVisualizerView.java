@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class RecorderVisualizerView extends View {
     private int width; // width of this View
     private int height; // height of this View
     private Paint linePaint; // specifies line drawing characteristics
+    float max = 0;
+    float oldMax = 0;
 
     // constructor
     public RecorderVisualizerView(Context context, AttributeSet attrs) {
@@ -59,7 +62,10 @@ public class RecorderVisualizerView extends View {
         for (float power : amplitudes) {
             float scaledHeight = power / LINE_SCALE; // scale the power
             curX += LINE_WIDTH; // increase X by LINE_WIDTH
-
+            oldMax = max;
+            max = Math.max(max, scaledHeight);
+            if(oldMax!=max)
+                Log.e("DEBUG", "Line height: "+max);
             // draw a line representing this item in the amplitudes ArrayList
             canvas.drawLine(curX, middle + scaledHeight / 2, curX, middle
                     - scaledHeight / 2, linePaint);

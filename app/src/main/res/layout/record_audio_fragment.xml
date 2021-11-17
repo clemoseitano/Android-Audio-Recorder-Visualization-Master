@@ -115,7 +115,7 @@
         <com.serveroverload.recorder.customview.RecorderVisualizerView
             android:id="@+id/visualizer"
             android:layout_width="match_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="96dp"
             android:layout_centerHorizontal="true"
             android:background="@android:color/background_dark" />
     </FrameLayout>
